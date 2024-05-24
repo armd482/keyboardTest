@@ -92,7 +92,7 @@ export default function Home() {
             <button onClick={() => setBoardType("plastic")}>플라스틱</button>
           </div>
 
-          {selectedKey && <SketchPicker color={color} onChange={changeColor} width={190} />}
+          {selectedKey && <SketchPicker color={color} onChange={changeColor} />}
         </div>
       </div>
     </>
