@@ -25,14 +25,10 @@ export default function Keyboard({ keyType, selectedKey, changeSelectedKey, keyC
   const keyArr = keyType === "tkl" ? [...key] : [...key, ...tenKey];
   const scale = keyType === "tkl" ? 2.5 : 0.04;
 
-  console.log(nodes, materials);
   return (
     <>
-      <group>
+      <group onPointerDown={(e: any) => handleClickKey(e, e.object.material.name)}>
         <mesh
-          onClick={(e) => {
-            handleClickKey(e, "cube");
-          }}
           geometry={nodes.cube.geometry}
           material={materials.cube}
           rotation={keyType === "tkl" ? [-1.2, 0, 0] : [0.4, 0, 0]}
@@ -44,9 +40,6 @@ export default function Keyboard({ keyType, selectedKey, changeSelectedKey, keyC
         />
         {keyArr.map((el) => (
           <mesh
-            onClick={(e) => {
-              handleClickKey(e, el);
-            }}
             key={el}
             geometry={nodes[el].geometry}
             position={[0, 0, 0]}
@@ -57,6 +50,7 @@ export default function Keyboard({ keyType, selectedKey, changeSelectedKey, keyC
               color={keyColor[el]}
               opacity={selectedKey !== null && selectedKey !== "all" && selectedKey !== el ? 0.5 : 1}
               transparent={true}
+              name={el}
             />
           </mesh>
         ))}
