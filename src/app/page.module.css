@@ -21,3 +21,20 @@
   flex-direction: column;
   gap: 10px;
 }
+
+.colorPickerWrapper {
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+}
+
+.disabledBox {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-color: black;
+  opacity: 0.3;
+  top: 0;
+  bottom: 0;
+}

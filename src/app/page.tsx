@@ -13,6 +13,8 @@ import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const controlRef = useRef<OrbitControlsImpl>(null);
+  const canvasWrapperRef = useRef<HTMLDivElement>(null);
+  const colorPickerRef = useRef<HTMLDivElement>(null);
   const [keyType, setKeyType] = useState<"tkl" | "full">("full");
   const [boardType, setBoardType] = useState<"metal" | "plastic">("metal");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -58,6 +60,7 @@ export default function Home() {
     const canvas = canvasRef.current;
     const control = controlRef.current;
     if (!canvas || !control) return;
+    setSelectedKey(null);
     control.reset();
     requestAnimationFrame(() => {
       const image = canvas.toDataURL("image/png");
@@ -70,6 +73,22 @@ export default function Home() {
       setColor(keyColor[selectedKey]);
     }
   }, [selectedKey, keyColor]);
+
+  useEffect(() => {
+    const clickOuter = (e: MouseEvent) => {
+      if (
+        !canvasWrapperRef.current?.contains(e.target as Node) &&
+        !colorPickerRef.current?.contains(e.target as Node)
+      ) {
+        setSelectedKey(null);
+      }
+    };
+    document.addEventListener("click", clickOuter);
+    return () => {
+      document.removeEventListener("click", clickOuter);
+    };
+  }, []);
+
   return (
     <>
       <div className={styles.buttonWrapper}>
@@ -77,7 +96,7 @@ export default function Home() {
         <button onClick={() => setKeyType("full")}>full</button>
       </div>
       <div className={styles.wrapper}>
-        <div className={styles.canvasWrapper}>
+        <div className={styles.canvasWrapper} ref={canvasWrapperRef}>
           <Suspense fallback={<CanvasLoading />}>
             <Canvas
               ref={canvasRef}
@@ -99,7 +118,6 @@ export default function Home() {
               />
               <Environment preset="warehouse" />
               <OrbitControls ref={controlRef} />
-              <ambientLight />
             </Canvas>
           </Suspense>
         </div>
@@ -113,7 +131,10 @@ export default function Home() {
             <button onClick={() => setBoardType("metal")}>금속</button>
             <button onClick={() => setBoardType("plastic")}>플라스틱</button>
           </div>
-          {selectedKey && <SketchPicker color={color} onChange={changeColor} disableAlpha />}
+          <div className={styles.colorPickerWrapper} ref={colorPickerRef}>
+            <SketchPicker color={color} onChange={changeColor} disableAlpha />
+            {!selectedKey && <div className={styles.disabledBox} />}
+          </div>
           <button onClick={handleClickImageButton}>사진 저장</button>
         </div>
       </div>
