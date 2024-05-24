@@ -99,21 +99,21 @@ export default function Home() {
               />
               <Environment preset="warehouse" />
               <OrbitControls ref={controlRef} />
-              {/* <ambientLight /> */}
+              <ambientLight />
             </Canvas>
           </Suspense>
         </div>
         <div className={styles.optionWrapper}>
+          <div>선택: {selectedKey}</div>
           <div className={styles.buttonWrapper}>
             <button onClick={() => setSelectedKey("all")}>전체</button>
-            <button onClick={() => setSelectedKey(null)}>선택 해제</button>
+            {/* <button onClick={() => setSelectedKey(null)}>선택 해제</button> */}
           </div>
           <div className={styles.buttonWrapper}>
             <button onClick={() => setBoardType("metal")}>금속</button>
             <button onClick={() => setBoardType("plastic")}>플라스틱</button>
           </div>
-          <div>선택: {selectedKey}</div>
-          {selectedKey && <SketchPicker color={color} onChange={changeColor} />}
+          {selectedKey && <SketchPicker color={color} onChange={changeColor} disableAlpha />}
           <button onClick={handleClickImageButton}>사진 저장</button>
         </div>
       </div>
