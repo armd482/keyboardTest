@@ -14,7 +14,7 @@ export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const controlRef = useRef<OrbitControlsImpl>(null);
   const canvasWrapperRef = useRef<HTMLDivElement>(null);
-  const colorPickerRef = useRef<HTMLDivElement>(null);
+  const optionRef = useRef<HTMLDivElement>(null);
   const [keyType, setKeyType] = useState<"tkl" | "full">("full");
   const [boardType, setBoardType] = useState<"metal" | "plastic">("metal");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -76,10 +76,7 @@ export default function Home() {
 
   useEffect(() => {
     const clickOuter = (e: MouseEvent) => {
-      if (
-        !canvasWrapperRef.current?.contains(e.target as Node) &&
-        !colorPickerRef.current?.contains(e.target as Node)
-      ) {
+      if (!canvasWrapperRef.current?.contains(e.target as Node) && !optionRef.current?.contains(e.target as Node)) {
         setSelectedKey(null);
       }
     };
@@ -105,7 +102,7 @@ export default function Home() {
                 near: 0.2, //가까이 있는 물체 렌더링 범위
                 position: [0, 1.5, 0.6], //위치
               }}
-              style={{ width: "500px", backgroundColor: "gray" }}
+              style={{ width: "500px" }}
               gl={{ preserveDrawingBuffer: true, antialias: true }}
               onPointerMissed={handleClickOutside}
             >
@@ -116,12 +113,12 @@ export default function Home() {
                 changeSelectedKey={changeSelectedKey}
                 keyColor={keyColor}
               />
-              <Environment preset="warehouse" />
+              <Environment preset="city" />
               <OrbitControls ref={controlRef} />
             </Canvas>
           </Suspense>
         </div>
-        <div className={styles.optionWrapper}>
+        <div className={styles.optionWrapper} ref={optionRef}>
           <div>선택: {selectedKey}</div>
           <div className={styles.buttonWrapper}>
             <button onClick={() => setSelectedKey("all")}>전체</button>
@@ -131,7 +128,7 @@ export default function Home() {
             <button onClick={() => setBoardType("metal")}>금속</button>
             <button onClick={() => setBoardType("plastic")}>플라스틱</button>
           </div>
-          <div className={styles.colorPickerWrapper} ref={colorPickerRef}>
+          <div className={styles.colorPickerWrapper}>
             <SketchPicker color={color} onChange={changeColor} disableAlpha />
             {!selectedKey && <div className={styles.disabledBox} />}
           </div>
