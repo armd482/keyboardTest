@@ -10,6 +10,11 @@ import { ColorResult, SketchPicker } from "react-color";
 import { key, tenKey } from "@/constant";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
+const DEFAULT_KEY_COLOR = {};
+[...key, ...tenKey, "cube"].forEach((el) => {
+  Object.assign(DEFAULT_KEY_COLOR, { [el]: "#ffffff" });
+});
+
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const controlRef = useRef<OrbitControlsImpl>(null);
@@ -18,14 +23,7 @@ export default function Home() {
   const [keyType, setKeyType] = useState<"tkl" | "full">("full");
   const [boardType, setBoardType] = useState<"metal" | "plastic">("metal");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
-  const [keyColor, setKeyColor] = useState<{ [key: string]: string }>(() => {
-    const k = [...key, ...tenKey, "cube"];
-    const c = {};
-    k.map((el) => {
-      Object.assign(c, { [el]: "#ffffff" });
-    });
-    return c;
-  });
+  const [keyColor, setKeyColor] = useState<{ [key: string]: string }>(DEFAULT_KEY_COLOR);
   const [color, setColor] = useState<string>("#ffffff");
   const changeSelectedKey = useCallback((value: string | null) => {
     setSelectedKey(value);
@@ -54,6 +52,16 @@ export default function Home() {
 
   const handleClickOutside = () => {
     setSelectedKey(null);
+  };
+
+  const handleClickReset = () => {
+    setSelectedKey(null);
+    setKeyColor(DEFAULT_KEY_COLOR);
+    const control = controlRef.current;
+    if (control) {
+      control.reset();
+    }
+    console.log(DEFAULT_KEY_COLOR);
   };
 
   const handleClickImageButton = () => {
@@ -123,6 +131,7 @@ export default function Home() {
           <div className={styles.buttonWrapper}>
             <button onClick={() => setSelectedKey("all")}>전체</button>
             {/* <button onClick={() => setSelectedKey(null)}>선택 해제</button> */}
+            <button onClick={handleClickReset}>초기화</button>
           </div>
           <div className={styles.buttonWrapper}>
             <button onClick={() => setBoardType("metal")}>금속</button>
